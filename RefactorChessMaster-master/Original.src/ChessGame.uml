@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>ChessGameEngine</OriginalElement>
+  <nodes>
+    <node x="1357.0" y="434.0">Bishop</node>
+    <node x="607.5" y="0.0">ChessGamePiece</node>
+    <node x="954.0" y="544.0">BoardSquare</node>
+    <node x="1090.0" y="434.0">Queen</node>
+    <node x="1205.0" y="544.0">ChessGameLog</node>
+    <node x="0.0" y="798.0">ChessGraveyard</node>
+    <node x="0.0" y="423.0">Pawn</node>
+    <node x="0.0" y="544.0">ChessGameBoard</node>
+    <node x="286.0" y="423.0">King</node>
+    <node x="309.0" y="544.0">ChessGameEngine</node>
+    <node x="266.0" y="798.0">ChessMain</node>
+    <node x="460.0" y="798.0">ChessMenuBar</node>
+    <node x="556.0" y="434.0">Knight</node>
+    <node x="681.0" y="544.0">ChessPanel</node>
+    <node x="823.0" y="434.0">Rook</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="Pawn" target="ChessGamePiece">
+      <point x="0.0" y="-38.0" />
+      <point x="133.0" y="383.0" />
+      <point x="641.75" y="383.0" />
+      <point x="-171.25" y="181.5" />
+    </edge>
+    <edge source="Rook" target="ChessGamePiece">
+      <point x="0.0" y="-27.0" />
+      <point x="946.5" y="403.0" />
+      <point x="847.25" y="403.0" />
+      <point x="34.25" y="181.5" />
+    </edge>
+    <edge source="Queen" target="ChessGamePiece">
+      <point x="0.0" y="-27.0" />
+      <point x="1213.5" y="393.0" />
+      <point x="915.75" y="393.0" />
+      <point x="102.75" y="181.5" />
+    </edge>
+    <edge source="King" target="ChessGamePiece">
+      <point x="0.0" y="-38.0" />
+      <point x="411.0" y="393.0" />
+      <point x="710.25" y="393.0" />
+      <point x="-102.75" y="181.5" />
+    </edge>
+    <edge source="Knight" target="ChessGamePiece">
+      <point x="0.0" y="-27.0" />
+      <point x="679.5" y="403.0" />
+      <point x="778.75" y="403.0" />
+      <point x="-34.25" y="181.5" />
+    </edge>
+    <edge source="Bishop" target="ChessGamePiece">
+      <point x="0.0" y="-27.0" />
+      <point x="1480.5" y="383.0" />
+      <point x="984.25" y="383.0" />
+      <point x="171.25" y="181.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.6458673932788372" x="978.3631434036329" y="445.26578540289705" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>public</VISIBILITY>
+</Diagram>
+

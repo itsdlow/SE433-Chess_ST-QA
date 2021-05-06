@@ -8,7 +8,7 @@ import javax.swing.*;
  * @author Danielle Bushrow (dbushrow)
  * @version 2010.11.17
  */
-public class ChessMain{
+public class ChessMain {
     // ----------------------------------------------------------
     /**
      * Creates the GUI for Chess.

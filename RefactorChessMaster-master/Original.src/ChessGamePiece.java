@@ -489,7 +489,7 @@ public abstract class ChessGamePiece{
             setPieceLocation( row, col );
             moveLog += " (" + row + ", " + col + ")";
             ( (ChessPanel)board.getParent() ).getGameLog().addToLog( moveLog );
-            board.getCell( row, col ).setPieceOnSquare( this );
+            board.getCell( row, col ).setPieceOnSquare( this ); // NOTE:: How to add pieces to board
             if ( !skipMoveGeneration ){
                 updatePossibleMoves( board );
             }

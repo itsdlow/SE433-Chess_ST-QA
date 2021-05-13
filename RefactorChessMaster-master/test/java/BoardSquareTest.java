@@ -63,16 +63,14 @@ public class BoardSquareTest {
     public void getPieceOnSquareTest(){
         int expectedRow = 1;
         int expectedCol = 1;
-        ChessGamePiece expectedGP = null;
 
         //setup
-        BoardSquare testSquare = new BoardSquare(expectedRow, expectedCol, expectedGP);
+        ChessGameBoard chessBoard = new ChessGameBoard();
+        Knight testKnight = new Knight(chessBoard, expectedRow, expectedCol, 1);
+        BoardSquare testSquare = new BoardSquare(expectedRow, expectedCol, testKnight);
 
         //
-
-
-        //
-        assertEquals(testSquare.getPieceOnSquare(), expectedGP);
+        assertEquals(testSquare.getPieceOnSquare(), testKnight);
     }
 
     @Test
@@ -98,7 +96,6 @@ public class BoardSquareTest {
     public void clearSquareTest(){
         int expectedRow = 1;
         int expectedCol = 1;
-        ChessGamePiece initGP = null;
 
         //setup
         ChessGameBoard chessBoard = new ChessGameBoard();
@@ -106,7 +103,7 @@ public class BoardSquareTest {
         BoardSquare testSquare = new BoardSquare(expectedRow, expectedCol, testKnight);
 
         //
-        testSquare.removeAll();
+        testSquare.clearSquare();
 
         //
         assertNull(testSquare.getPieceOnSquare());

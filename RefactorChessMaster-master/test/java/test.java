@@ -1,4 +1,6 @@
 
+//import org.junit.jupiter.api.BeforeAll;
+//import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,10 +16,10 @@ public class test {
         //setup
         BoardSquare testSquare = new BoardSquare(expectedRow, expectedCol, expectedGP);
 
-        //
+        //apply method
 
 
-        //
+        //assert
         assertEquals(testSquare.getRow(), expectedRow);
         assertEquals(testSquare.getColumn(), expectedRow);
         assertEquals(testSquare.getPieceOnSquare(), expectedGP);

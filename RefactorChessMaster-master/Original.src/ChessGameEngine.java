@@ -57,6 +57,10 @@ public class ChessGameEngine{
             "A new chess "
                 + "game has been started. Player 1 (white) will play "
                 + "against Player 2 (black). BEGIN!" );
+
+        //NOTE:: Graveyard not cleared on NewGame--BUG FOUND??
+        //TODO:: repaint(); (found in ChessGameBoard::resetBoard )
+
     }
     /**
      * Switches the turn to be the next player's turn.

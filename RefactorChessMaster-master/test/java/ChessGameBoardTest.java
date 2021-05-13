@@ -1,12 +1,12 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 
 import java.awt.*;
+import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ChessGameBoardTest {
@@ -164,12 +164,81 @@ public class ChessGameBoardTest {
         ChessGameBoard testBoard = new ChessGameBoard();
 
         //apply method
-        BoardSquare[][] squares = testBoard.getCells();
+        assertNotNull(testBoard.getCell(0,0).getPieceOnSquare());
+        testBoard.clearCell(0,0);
 
         //assert
-        assertNull(testBoard.getCell(-1,0));
-
+        assertNull(testBoard.getCell(0,0).getPieceOnSquare());
     }
 
+    @Test
+    public void ClearEmptyCellTest()
+    {
+        //setup
+        ChessGameBoard testBoard = new ChessGameBoard();
 
+        //apply method
+        assertNull(testBoard.getCell(4,4).getPieceOnSquare());
+        testBoard.clearCell(4,4);
+
+        //assert
+        assertNull(testBoard.getCell(4,4).getPieceOnSquare());
+    }
+
+    @Test
+    public void ClearInvalidCellTest()
+    {
+        //setup
+        ChessGameBoard testBoard = new ChessGameBoard();
+
+        //apply method
+        Executable action = () -> {
+            testBoard.clearCell(-1,999);
+        };
+
+        //assert
+        assertThrows(IllegalStateException.class, action);
+    }
+
+    @Test
+    public void GetAllBlackPiecesTest()
+    {
+
+        //setup
+        ChessGameBoard testBoard = new ChessGameBoard();
+        testBoard.resetBoard(false); // remove all pieces
+
+        Pawn expectedPiece = new Pawn(testBoard,0,0,ChessGamePiece.BLACK);
+
+            //add back select pieces
+            testBoard.getCell( 0, 0 ).setPieceOnSquare( expectedPiece ); // NOTE:: How to add pieces to board
+            testBoard.getCell( 1, 0 ).setPieceOnSquare( new Pawn(testBoard,1,0,ChessGamePiece.WHITE) ); // NOTE:: How to add pieces to board
+
+        //apply method
+        ArrayList<ChessGamePiece> res = testBoard.getAllBlackPieces();
+
+        //assert
+        assertEquals(res.get(0), expectedPiece);
+    }
+
+    @Test
+    public void GetAllWhitePiecesTest()
+    {
+
+        //setup
+        ChessGameBoard testBoard = new ChessGameBoard();
+        testBoard.resetBoard(false); // remove all pieces
+
+        Pawn expectedPiece = new Pawn(testBoard,0,0,ChessGamePiece.WHITE);
+
+        //add back select pieces
+        testBoard.getCell( 0, 0 ).setPieceOnSquare( expectedPiece ); // NOTE:: How to add pieces to board
+        testBoard.getCell( 1, 0 ).setPieceOnSquare( new Pawn(testBoard,1,0,ChessGamePiece.BLACK) ); // NOTE:: How to add pieces to board
+
+        //apply method
+        ArrayList<ChessGamePiece> res = testBoard.getAllWhitePieces();
+
+        //assert
+        assertEquals(res.get(0), expectedPiece);
+    }
 }

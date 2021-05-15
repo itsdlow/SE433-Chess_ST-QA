@@ -86,7 +86,7 @@ public class ChessGameEngine{
      *            the player to check
      * @return boolean true if the player does have legal moves, false otherwise
      */
-    public boolean playerHasLegalMoves( int playerNum ){
+    public boolean playerHasLegalMoves( int playerNum ){//TODO:: replace with ENUM
         ArrayList<ChessGamePiece> pieces;
         if ( playerNum == 1 ){
             pieces = board.getAllWhitePieces();
@@ -216,6 +216,7 @@ public class ChessGameEngine{
      * @return int 1 or 2 for the losing play, -1 for stalemate, or 0 for a
      *         still valid game.
      */
+    //TODO:: replace return with enum
     public int determineGameLost(){
         if ( king1.isChecked( board ) && !playerHasLegalMoves( 1 ) ) // player 1
         // loss

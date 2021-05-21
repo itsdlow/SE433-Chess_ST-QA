@@ -246,6 +246,7 @@ public class ChessGameEngine{
      * @param e
      *            the mouse event from the listener
      */
+    //TODO:: enable determineActionFromSquareClick to be testable --> returns its side-effect?
     public void determineActionFromSquareClick( MouseEvent e ){
         BoardSquare squareClicked = (BoardSquare)e.getSource();
         ChessGamePiece pieceOnSquare = squareClicked.getPieceOnSquare();

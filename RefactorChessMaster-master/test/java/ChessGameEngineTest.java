@@ -377,7 +377,7 @@ public class ChessGameEngineTest
 //
 //    //2nd click tests
 //    @Test
-//    public void determineActionFromSquareClick_Unselect_Test()
+//    public void determineActionFromSquareClick_Deselect_Test()
 //    {
 //        //double click piece
 //    }

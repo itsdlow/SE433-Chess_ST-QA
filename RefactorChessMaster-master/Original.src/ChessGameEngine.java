@@ -16,7 +16,7 @@ public class ChessGameEngine{
     private ChessGamePiece currentPiece;
     private boolean        firstClick;
     private int            currentPlayer;
-    private ChessGameBoard board;
+    private final ChessGameBoard board;
     private King           king1;
     private King           king2;
     // ----------------------------------------------------------
@@ -247,7 +247,8 @@ public class ChessGameEngine{
      *            the mouse event from the listener
      */
     //TODO:: enable determineActionFromSquareClick to be testable --> returns its side-effect?
-    public void determineActionFromSquareClick( MouseEvent e ){
+    public SystemParameters.Actions determineActionFromSquareClick( MouseEvent e ){
+        SystemParameters.Actions action = SystemParameters.Actions.UNKNOWN;
         BoardSquare squareClicked = (BoardSquare)e.getSource();
         ChessGamePiece pieceOnSquare = squareClicked.getPieceOnSquare();
         board.clearColorsOnBoard();
@@ -257,6 +258,8 @@ public class ChessGameEngine{
                 currentPiece.showLegalMoves( board );
                 squareClicked.setBackground( Color.GREEN );
                 firstClick = false;
+
+                action = SystemParameters.Actions.Select;
             }
             else
             {
@@ -267,6 +270,8 @@ public class ChessGameEngine{
                             + "Get some glasses and pick a valid square.",
                         "Illegal move",
                         JOptionPane.ERROR_MESSAGE );
+
+                    action = SystemParameters.Actions.Invalid_SelectOpponent;
                 }
                 else
                 {
@@ -276,6 +281,8 @@ public class ChessGameEngine{
                             + "Get some glasses and pick a valid square.",
                         "Illegal move",
                         JOptionPane.ERROR_MESSAGE );
+
+                    action = SystemParameters.Actions.Invalid_SelectEmpty;
                 }
             }
         }
@@ -291,6 +298,8 @@ public class ChessGameEngine{
                         squareClicked.getColumn() );
                 if ( moveSuccessful ){
                     checkGameConditions();
+
+                    action = SystemParameters.Actions.Move;
                 }
                 else
                 {
@@ -305,6 +314,8 @@ public class ChessGameEngine{
                             + "and try using your brain this time!",
                         "Invalid move",
                         JOptionPane.ERROR_MESSAGE );
+
+                    action = SystemParameters.Actions.Invalid_Move;
                 }
                 firstClick = true;
             }
@@ -312,7 +323,10 @@ public class ChessGameEngine{
             // user is just unselecting the current piece
             {
                 firstClick = true;
+                action = SystemParameters.Actions.Deselect;
             }
         }
+
+        return action;
     }
 }

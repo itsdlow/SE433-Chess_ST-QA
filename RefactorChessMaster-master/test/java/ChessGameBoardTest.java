@@ -1,11 +1,14 @@
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
+//import org.junit.jupiter.api.DisplayName;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.function.Executable;
+//import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ChessGameBoardTest {
@@ -184,19 +187,22 @@ public class ChessGameBoardTest {
         assertNull(testBoard.getCell(4,4).getPieceOnSquare());
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void ClearInvalidCellTest()
     {
         //setup
         ChessGameBoard testBoard = new ChessGameBoard();
 
         //apply method
-        Executable action = () -> {
-            testBoard.clearCell(-1,999);
-        };
+        testBoard.clearCell(-1,999);
 
-        //assert
-        assertThrows(IllegalStateException.class, action);
+
+//        Executable action = () -> {
+//            testBoard.clearCell(-1,999);
+//        };
+//
+//        //assert
+//        assertThrows(IllegalStateException.class, action);
     }
 
     @Test

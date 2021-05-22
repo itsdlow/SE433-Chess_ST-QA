@@ -1,12 +1,11 @@
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
-
+//import org.junit.jupiter.api.DisplayName;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.function.Executable;
+//import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ChessGameEngineTest
@@ -320,45 +319,77 @@ public class ChessGameEngineTest
         assertEquals(expectedPlayer2Loss, res);
     }
 
-    //first click tests
-    @Test
-    public void determineActionFromSquareClick_EmptySquare_Test()
-    {
+    //---------------------------
+    //NOTE:: No visible (non-private) side-effects produced from each branch of determineActionFromSquareClick()
+    //---------------------------
+    //TODO:: enable determineActionFromSquareClick to be testable --> returns its side-effect?
 
-        //setup
-        ChessPanel testPanel = new ChessPanel();
-        ChessGameEngine testEngine = testPanel.getGameEngine();
-
-        //apply
-        boolean res = testEngine.isKingInCheck(false);
-
-        //assert
-        assertEquals(res, false);
-    }
-    @Test
-    public void determineActionFromSquareClick_OpponentSquare1_Test()
-    {
-    }
-    @Test
-    public void determineActionFromSquareClick_OpponentSquare2_Test()
-    {
-    }
-
-    //2nd click tests
-    @Test
-    public void determineActionFromSquareClick_Unselect_Test()
-    {
-        //double click piece
-    }
-
-    @Test
-    public void determineActionFromSquareClick_Move_Test()
-    {
-    }
-
-    @Test
-    public void determineActionFromSquareClick_InvalidMove_Test()
-    {
-    }
+//    //first click tests
+//    @Test
+//    public void determineActionFromSquareClick_EmptySquare_Test()
+//    {
+//
+//        //setup
+//        ChessPanel testPanel = new ChessPanel();
+//        ChessGameEngine testEngine = testPanel.getGameEngine();
+//        ChessGameBoard testBoard = testPanel.getGameBoard();
+//
+//        // apply
+//        BoardSquare emptyCell = testBoard.getCell(4, 0);
+//
+//        //make a move (switch current player)
+//        MouseEvent e1 = new MouseEvent(emptyCell, 0, 0, 0, 0, 0, 0, false);
+//
+//        testEngine.determineActionFromSquareClick(e1);
+//
+//        //assert
+//        assertEquals(res, false);
+//    }
+//    @Test
+//    public void determineActionFromSquareClick_OpponentSquare1_Test()
+//    {
+//        //setup
+//        ChessPanel testPanel = new ChessPanel();
+//        ChessGameEngine testEngine = testPanel.getGameEngine();
+//
+//        ChessGameBoard testBoard = testPanel.getGameBoard();
+//
+//
+//        // apply
+//        BoardSquare checkCell1 = testBoard.getCell(2, 2);
+//        BoardSquare checkCell2 = testBoard.getCell(2, 3);
+//
+//        //make a move (switch current player)
+//        MouseEvent e1 = new MouseEvent(piecePosition, 0, 0, 0, 0, 0, 0, false);
+//        MouseEvent e2 = new MouseEvent(toMovePosition, 0, 0, 0, 0, 0, 0, false);
+//
+//        //apply
+//        testEngine.determineActionFromSquareClick(e1);
+//        testEngine.determineActionFromSquareClick(e2);
+//
+//        //assert
+//        assertEquals(expectedPlayer2Loss, res);
+//    }
+//    @Test
+//    public void determineActionFromSquareClick_OpponentSquare2_Test()
+//    {
+//    }
+//
+//    //2nd click tests
+//    @Test
+//    public void determineActionFromSquareClick_Deselect_Test()
+//    {
+//        //double click piece
+//    }
+//
+//    @Test
+//    public void determineActionFromSquareClick_Move_Test()
+//    {
+//    }
+//
+//    @Test
+//    public void determineActionFromSquareClick_InvalidMove_Test()
+//    {
+//    }
 
 }

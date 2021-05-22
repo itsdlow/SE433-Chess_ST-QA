@@ -48,8 +48,10 @@ public class Pawn
         if ( super.move( board, row, col ) ){
             notMoved = false;
             possibleMoves = calculatePossibleMoves( board );
-            if ( ( getColorOfPiece() == ChessGamePiece.BLACK && row == 7 )
-                || ( getColorOfPiece() == ChessGamePiece.WHITE && row == 0 ) ){ // pawn has reached the end of the board, promote it to queen
+
+            // pawn has reached the end of the board, promote it to queen -- Color of piece does not matter, if a pawn is in a main row MUST BE enemy territory
+            if ( SystemParameters.isMainRow(row) )
+            {
                 board.getCell( row, col ).setPieceOnSquare( new Queen(
                     board,
                     row,

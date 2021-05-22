@@ -1,6 +1,6 @@
+import java.awt.*;
 import java.util.ArrayList;
-import java.awt.Color;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.awt.event.MouseEvent;
 // -------------------------------------------------------------------------
 /**
@@ -13,12 +13,36 @@ import java.awt.event.MouseEvent;
  * @version 2010.11.17
  */
 public class ChessGameEngine{
-    private ChessGamePiece currentPiece;
-    private boolean        firstClick;
-    private int            currentPlayer;
-    private final ChessGameBoard board;
-    private King           king1;
-    private King           king2;
+    private ChessGamePiece          currentPiece;
+    private boolean                 firstClick;
+    private SystemParameters.Player currentPlayer;
+    private final ChessGameBoard    board;
+    private King                    king1;
+    private King                    king2;
+
+    //testable addition
+//    private JOptionPane          jop;
+//    private JDialog              currentDialog;
+    private boolean verbose;
+
+    public enum GameCondition
+    {
+        STALEMATE(-1),
+        IN_PLAY(0),
+        PLAYER1_LOSS(1),
+        PLAYER2_LOSS(2);
+
+        private int value;
+
+        private GameCondition(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
     // ----------------------------------------------------------
     /**
      * Create a new ChessGameEngine object. Accepts a fully-created
@@ -27,48 +51,54 @@ public class ChessGameEngine{
      * @param board
      *            the reference ChessGameBoard
      */
-    public ChessGameEngine( ChessGameBoard board ){
-        firstClick = true;
-        currentPlayer = 1;
+    public ChessGameEngine( ChessGameBoard board )
+    {
         this.board = board;
-        this.king1 = (King)board.getCell( 7, 3 ).getPieceOnSquare();
-        this.king2 = (King)board.getCell( 0, 3 ).getPieceOnSquare();
-        ( (ChessPanel)board.getParent() ).getGameLog().clearLog();
-        ( (ChessPanel)board.getParent() ).getGameLog().addToLog(
-            "A new chess "
-                + "game has been started. Player 1 (white) will play "
-                + "against Player 2 (black). BEGIN!" );
+        this.initialize();
     }
     // ----------------------------------------------------------
     /**
      * Resets the game to its original state.
      */
-    public void reset(){
-        firstClick = true;
-        currentPlayer = 1;
-        ( (ChessPanel)board.getParent() ).getGraveyard( 1 ).clearGraveyard();
-        ( (ChessPanel)board.getParent() ).getGraveyard( 2 ).clearGraveyard();
-        ( (ChessPanel)board.getParent() ).getGameBoard().initializeBoard();
-        ( (ChessPanel)board.getParent() ).revalidate();
-        this.king1 = (King)board.getCell( 7, 3 ).getPieceOnSquare();
-        this.king2 = (King)board.getCell( 0, 3 ).getPieceOnSquare();
-        ( (ChessPanel)board.getParent() ).getGameLog().clearLog();
-        ( (ChessPanel)board.getParent() ).getGameLog().addToLog(
-            "A new chess "
-                + "game has been started. Player 1 (white) will play "
-                + "against Player 2 (black). BEGIN!" );
+    public void reset()
+    {
+        this.initialize();
 
         //NOTE:: Graveyard not cleared on NewGame--BUG FOUND??
         //TODO:: repaint(); (found in ChessGameBoard::resetBoard )
 
     }
+
+    private void initialize()
+    {
+        firstClick = true;
+        currentPlayer = SystemParameters.Player.ONE;
+        verbose = true;
+
+        ( (ChessPanel)board.getParent() ).getGraveyard( SystemParameters.Player.ONE ).clearGraveyard();
+        ( (ChessPanel)board.getParent() ).getGraveyard( SystemParameters.Player.TWO ).clearGraveyard();
+        ( (ChessPanel)board.getParent() ).getGameBoard().initializeBoard();
+        ( (ChessPanel)board.getParent() ).revalidate();
+        this.king1 = (King)board.getCell( SystemParameters.getWhiteMainRow(), SystemParameters.getKingColumn() ).getPieceOnSquare();
+        this.king2 = (King)board.getCell( SystemParameters.getBlackMainRow(), SystemParameters.getKingColumn() ).getPieceOnSquare();
+        ( (ChessPanel)board.getParent() ).getGameLog().clearLog();
+        ( (ChessPanel)board.getParent() ).getGameLog().addToLog(
+                "A new chess "
+                        + "game has been started. Player 1 (white) will play "
+                        + "against Player 2 (black). BEGIN!" );
+    }
+
     /**
      * Switches the turn to be the next player's turn.
      */
     private void nextTurn(){
-        currentPlayer = ( currentPlayer == 1 ) ? 2 : 1;
+        this.updateCurrentPlayer();
         ( (ChessPanel)board.getParent() ).getGameLog().addToLog(
                 "It is now Player " + currentPlayer + "'s turn." );
+    }
+    private void updateCurrentPlayer()
+    {
+        currentPlayer = ( currentPlayer == SystemParameters.Player.ONE ) ? SystemParameters.Player.TWO : SystemParameters.Player.ONE;
     }
     // ----------------------------------------------------------
     /**
@@ -76,7 +106,7 @@ public class ChessGameEngine{
      *
      * @return int the current player (1 or 2)
      */
-    public int getCurrentPlayer(){
+    public SystemParameters.Player getCurrentPlayer(){
         return currentPlayer;
     }
     /**
@@ -86,12 +116,12 @@ public class ChessGameEngine{
      *            the player to check
      * @return boolean true if the player does have legal moves, false otherwise
      */
-    public boolean playerHasLegalMoves( int playerNum ){//TODO:: replace with ENUM
+    public boolean playerHasLegalMoves( SystemParameters.Player playerNum ){//TODO:: replace with ENUM
         ArrayList<ChessGamePiece> pieces;
-        if ( playerNum == 1 ){
+        if ( playerNum == SystemParameters.Player.ONE ){
             pieces = board.getAllWhitePieces();
         }
-        else if ( playerNum == 2 ){
+        else if ( playerNum == SystemParameters.Player.TWO ){
             pieces = board.getAllBlackPieces();
         }
         else
@@ -115,7 +145,7 @@ public class ChessGameEngine{
         {
             return false;
         }
-        if ( currentPlayer == 2 ) // black player
+        if ( currentPlayer == SystemParameters.Player.TWO ) // black player
         {
             if ( currentPiece.getColorOfPiece() == ChessGamePiece.BLACK ){
                 return true;
@@ -141,14 +171,14 @@ public class ChessGameEngine{
      */
     public boolean isKingInCheck( boolean checkCurrent ){
         if ( checkCurrent ){
-            if ( currentPlayer == 1 ){
+            if ( currentPlayer == SystemParameters.Player.ONE ){
                 return king1.isChecked( board );
             }
             return king2.isChecked( board );
         }
         else
         {
-            if ( currentPlayer == 2 ){
+            if ( currentPlayer == SystemParameters.Player.TWO ){
                 return king1.isChecked( board );
             }
             return king2.isChecked( board );
@@ -180,17 +210,17 @@ public class ChessGameEngine{
      * method).
      */
     private void checkGameConditions(){
-        int origPlayer = currentPlayer;
-        for ( int i = 0; i < 2; i++ ){
-            int gameLostRetVal = determineGameLost();
-            if ( gameLostRetVal < 0 ){
+        SystemParameters.Player origPlayer = currentPlayer;
+        for ( int i = 0; i < SystemParameters.getTotalPlayers(); i++ ){
+            GameCondition gameLostRetVal = determineGameLost();
+            if ( gameLostRetVal == GameCondition.STALEMATE ){
                 askUserToPlayAgain( "Game over - STALEMATE. You should both go"
                     + " cry in a corner!" );
                 return;
             }
-            else if ( gameLostRetVal > 0 ){
+            else if ( gameLostRetVal == GameCondition.PLAYER1_LOSS || gameLostRetVal == GameCondition.PLAYER2_LOSS ){
                 askUserToPlayAgain( "Game over - CHECKMATE. " + "Player "
-                    + gameLostRetVal + " loses and should go"
+                    + gameLostRetVal.getValue() + " loses and should go"
                     + " cry in a corner!" );
                 return;
             }
@@ -203,7 +233,7 @@ public class ChessGameEngine{
                     "Warning",
                     JOptionPane.WARNING_MESSAGE );
             }
-            currentPlayer = currentPlayer == 1 ? 2 : 1;
+            this.updateCurrentPlayer();
             // check the next player's conditions as well.
         }
         currentPlayer = origPlayer;
@@ -217,31 +247,32 @@ public class ChessGameEngine{
      *         still valid game.
      */
     //TODO:: replace return with enum
-    public int determineGameLost(){
-        if ( king1.isChecked( board ) && !playerHasLegalMoves( 1 ) ) // player 1
+    public GameCondition determineGameLost(){
+        if ( king1.isChecked( board ) && !playerHasLegalMoves(SystemParameters.Player.ONE) ) // player 1
         // loss
         {
-            return 1;
+            return GameCondition.PLAYER1_LOSS;
         }
-        if ( king2.isChecked( board ) && !playerHasLegalMoves( 2 ) ) // player 2
+        if ( king2.isChecked( board ) && !playerHasLegalMoves( SystemParameters.Player.TWO ) ) // player 2
         // loss
         {
-            return 2;
+            return GameCondition.PLAYER2_LOSS;
         }
-        if ( ( !king1.isChecked( board ) && !playerHasLegalMoves( 1 ) )
-            || ( !king2.isChecked( board ) && !playerHasLegalMoves( 2 ) )
+        if ( ( !king1.isChecked( board ) && !playerHasLegalMoves( SystemParameters.Player.ONE ) )
+            || ( !king2.isChecked( board ) && !playerHasLegalMoves( SystemParameters.Player.TWO ) )
             || ( board.getAllWhitePieces().size() == 1 &&
                 board.getAllBlackPieces().size() == 1 ) ) // stalemate
         {
-            return -1;
+            return GameCondition.STALEMATE;
         }
-        return 0; // game is still in play
+        return GameCondition.IN_PLAY; // game is still in play
     }
+
     // ----------------------------------------------------------
     /**
      * Given a MouseEvent from a user clicking on a square, the appropriate
-     * action is determined. Actions include: moving a piece, showing the possi
-     * ble moves of a piece, or ending the game after checking game conditions.
+     * action is determined. Actions include: moving a piece, showing the possible
+     * moves of a piece, or ending the game after checking game conditions.
      *
      * @param e
      *            the mouse event from the listener
@@ -264,23 +295,19 @@ public class ChessGameEngine{
             else
             {
                 if ( currentPiece != null ){
-                    JOptionPane.showMessageDialog(
-                        squareClicked,
-                        "You tried to pick up the other player's piece! "
-                            + "Get some glasses and pick a valid square.",
-                        "Illegal move",
-                        JOptionPane.ERROR_MESSAGE );
+                    showErrorMessageDialog(squareClicked,
+                            "You tried to pick up the other player's piece! "
+                                    + "Get some glasses and pick a valid square.",
+                            "Illegal move");
 
                     action = SystemParameters.Actions.Invalid_SelectOpponent;
                 }
                 else
                 {
-                    JOptionPane.showMessageDialog(
-                        squareClicked,
-                        "You tried to pick up an empty square! "
-                            + "Get some glasses and pick a valid square.",
-                        "Illegal move",
-                        JOptionPane.ERROR_MESSAGE );
+                    showErrorMessageDialog(squareClicked,
+                            "You tried to pick up an empty square! "
+                                    + "Get some glasses and pick a valid square.",
+                            "Illegal move");
 
                     action = SystemParameters.Actions.Invalid_SelectEmpty;
                 }
@@ -305,15 +332,13 @@ public class ChessGameEngine{
                 {
                     int row = squareClicked.getRow();
                     int col = squareClicked.getColumn();
-                    JOptionPane.showMessageDialog(
-                        squareClicked,
-                        "The move to row " + ( row + 1 ) + " and column "
-                            + ( col + 1 )
-                            + " is either not valid or not legal "
-                            + "for this piece. Choose another move location, "
-                            + "and try using your brain this time!",
-                        "Invalid move",
-                        JOptionPane.ERROR_MESSAGE );
+                    this.showErrorMessageDialog(squareClicked,
+                            "The move to row " + ( row + 1 ) + " and column "
+                                    + ( col + 1 )
+                                    + " is either not valid or not legal "
+                                    + "for this piece. Choose another move location, "
+                                    + "and try using your brain this time!",
+                            "Invalid move");
 
                     action = SystemParameters.Actions.Invalid_Move;
                 }
@@ -328,5 +353,18 @@ public class ChessGameEngine{
         }
 
         return action;
+    }
+
+    public void showErrorMessageDialog(Component parent, String message, String title)
+    {
+        if(this.verbose)
+        {
+            JOptionPane.showMessageDialog(parent, message, title, JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void setVerbose(boolean verbosity)
+    {
+        this.verbose = verbosity;
     }
 }

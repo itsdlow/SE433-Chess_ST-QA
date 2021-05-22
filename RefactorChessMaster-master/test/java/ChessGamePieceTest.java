@@ -1,5 +1,8 @@
-import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
+//import static org.junit.jupiter.api.Assertions.*;
+//import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
 
 import java.util.ArrayList;
 
@@ -151,7 +154,7 @@ public class ChessGamePieceTest {
         ChessPanel testPanel = new ChessPanel();
         ChessGameEngine testEngine = testPanel.getGameEngine();
         ChessGameBoard testBoard = testPanel.getGameBoard();
-        ChessGraveyard testGrave = testPanel.getGraveyard(1);
+        ChessGraveyard testGrave = testPanel.getGraveyard(SystemParameters.Player.ONE);
         ChessGamePiece pawn = testBoard.getCell(1, 0).getPieceOnSquare();
         ChessGamePiece rook = testBoard.getCell(0, 0).getPieceOnSquare();
         testGrave.addPiece(rook);

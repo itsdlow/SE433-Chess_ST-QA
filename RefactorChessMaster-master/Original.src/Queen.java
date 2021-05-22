@@ -35,14 +35,14 @@ public class Queen
      */
     @Override
     protected ArrayList<String> calculatePossibleMoves( ChessGameBoard board ){
-        ArrayList<String> northEastMoves = calculateNorthEastMoves( board, 8 );
-        ArrayList<String> northWestMoves = calculateNorthWestMoves( board, 8 );
-        ArrayList<String> southEastMoves = calculateSouthEastMoves( board, 8 );
-        ArrayList<String> southWestMoves = calculateSouthWestMoves( board, 8 );
-        ArrayList<String> northMoves = calculateNorthMoves( board, 8 );
-        ArrayList<String> southMoves = calculateSouthMoves( board, 8 );
-        ArrayList<String> eastMoves = calculateEastMoves( board, 8 );
-        ArrayList<String> westMoves = calculateWestMoves( board, 8 );
+        ArrayList<String> northEastMoves = calculateNorthEastMoves( board, SystemParameters.getQueenNumMoves() );
+        ArrayList<String> northWestMoves = calculateNorthWestMoves( board, SystemParameters.getQueenNumMoves() );
+        ArrayList<String> southEastMoves = calculateSouthEastMoves( board, SystemParameters.getQueenNumMoves() );
+        ArrayList<String> southWestMoves = calculateSouthWestMoves( board, SystemParameters.getQueenNumMoves() );
+        ArrayList<String> northMoves = calculateNorthMoves( board, SystemParameters.getQueenNumMoves() );
+        ArrayList<String> southMoves = calculateSouthMoves( board, SystemParameters.getQueenNumMoves() );
+        ArrayList<String> eastMoves = calculateEastMoves( board, SystemParameters.getQueenNumMoves() );
+        ArrayList<String> westMoves = calculateWestMoves( board, SystemParameters.getQueenNumMoves() );
         ArrayList<String> allMoves = new ArrayList<String>();
         allMoves.addAll( northEastMoves );
         allMoves.addAll( northWestMoves );

@@ -33,7 +33,7 @@ public class ChessPanel
         this.add( gameLog, BorderLayout.SOUTH );
         this.add( playerOneGraveyard, BorderLayout.WEST );
         this.add( playerTwoGraveyard, BorderLayout.EAST );
-        this.setPreferredSize( new Dimension( 800, 600 ) );
+        this.setPreferredSize( new Dimension( SystemParameters.getGUIWidth(), SystemParameters.getGUIHeight() ) );
         gameEngine = new ChessGameEngine( gameBoard ); // start the game
     }
     // ----------------------------------------------------------
@@ -71,16 +71,16 @@ public class ChessPanel
      *            the number of the player (1 or 2)
      * @return ChessGraveyard the graveyard requested
      */
-    public ChessGraveyard getGraveyard( int whichPlayer ){
-        if ( whichPlayer == 1 ){
-            return playerOneGraveyard;
-        }
-        else if ( whichPlayer == 2 ){
-            return playerTwoGraveyard;
-        }
-        else
+    public ChessGraveyard getGraveyard( SystemParameters.Player whichPlayer ){
+
+        switch(whichPlayer)
         {
-            return null;
+            case ONE:
+                return playerOneGraveyard;
+            case TWO:
+                return playerTwoGraveyard;
+            default:
+                return null;
         }
     }
 }

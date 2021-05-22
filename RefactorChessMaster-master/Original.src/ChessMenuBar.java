@@ -77,8 +77,8 @@ public class ChessMenuBar
     private void aboutHandler(){
         JOptionPane.showMessageDialog(
             this.getParent(),
-            "YetAnotherChessGame v1.0 by:\nBen Katz\nMyles David\n"
-                + "Danielle Bushrow\n\nFinal Project for CS2114 @ VT" );
+            "YetAnotherChessGame v2.0 Refactored by:\nDeAngelo Wilson\nJohn Sciacco\n"
+                + "\nFinal Project for SE433 @ DePaul University" );
     }
     /**
      * Takes an appropriate action if the restart button is clicked.
@@ -106,10 +106,10 @@ public class ChessMenuBar
      * Takes an appropriate action if the toggle graveyard button is clicked.
      */
     private void toggleGraveyardHandler(){
-        ( (ChessPanel)this.getParent() ).getGraveyard( 1 ).setVisible(
-            !( (ChessPanel)this.getParent() ).getGraveyard( 1 ).isVisible() );
-        ( (ChessPanel)this.getParent() ).getGraveyard( 2 ).setVisible(
-            !( (ChessPanel)this.getParent() ).getGraveyard( 2 ).isVisible() );
+        ( (ChessPanel)this.getParent() ).getGraveyard( SystemParameters.Player.ONE ).setVisible(
+            !( (ChessPanel)this.getParent() ).getGraveyard( SystemParameters.Player.ONE ).isVisible() );
+        ( (ChessPanel)this.getParent() ).getGraveyard( SystemParameters.Player.TWO ).setVisible(
+            !( (ChessPanel)this.getParent() ).getGraveyard( SystemParameters.Player.TWO ).isVisible() );
     }
     /**
      * Takes an appropriate action if the toggle game log button is clicked.

@@ -38,12 +38,8 @@ public class Knight
         ArrayList<String> moves = new ArrayList<String>();
         for ( int i = 2; i >= -2; i -= 4 ){
             for ( int j = 1; j >= -1; j -= 2 ){
-                if ( isOnScreen( pieceRow + i, pieceColumn + j )
-                    && ( isEnemy( board, pieceRow + i, pieceColumn + j ) ||
-                        board.getCell(
-                        pieceRow + i,
-                        pieceColumn + j )
-                        .getPieceOnSquare() == null ) ){
+                if ( isValidMove(board, i, j) )
+                {
                     moves.add( ( pieceRow + i ) + "," + ( pieceColumn + j ) );
                 }
             }
@@ -62,18 +58,30 @@ public class Knight
         ArrayList<String> moves = new ArrayList<String>();
         for ( int i = 1; i >= -1; i -= 2 ){
             for ( int j = 2; j >= -2; j -= 4 ){
-                if ( isOnScreen( pieceRow + i, pieceColumn + j )
-                    && ( isEnemy( board, pieceRow + i, pieceColumn + j ) ||
-                        board.getCell(
-                        pieceRow + i,
-                        pieceColumn + j )
-                        .getPieceOnSquare() == null ) ){
+                if ( isValidMove(board, i, j) )
+                {
                     moves.add( ( pieceRow + i ) + "," + ( pieceColumn + j ) );
                 }
             }
         }
         return moves;
     }
+
+    private boolean isValidMove(ChessGameBoard board, int row, int col)
+    {
+        boolean res = false;
+        boolean onScreen = isOnScreen( pieceRow + row, pieceColumn + col );
+        if(onScreen)
+        {
+            boolean isEnemy = isEnemy( board, pieceRow + row, pieceColumn + col );
+            boolean isEmpty = board.getCell(pieceRow + row, pieceColumn + col ).getPieceOnSquare() == null;
+            res = isEnemy || isEmpty;
+        }
+
+
+        return res;
+    }
+
     /**
      * Calculates the possible moves for this Knight.
      *

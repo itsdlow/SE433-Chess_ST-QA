@@ -33,11 +33,11 @@ public abstract class ChessGamePiece{
     /**
      * Represents a black piece as an int
      */
-    static final int            BLACK      = 0;
+    static final int            BLACK      = 1;
     /**
      * Represents a white piece as an int
      */
-    static final int            WHITE      = 1;
+    static final int            WHITE      = 2;
     /**
      * Represents a piece that has not been assigned a color
      */
@@ -134,7 +134,7 @@ public abstract class ChessGamePiece{
         ArrayList<String> moves = new ArrayList<String>();
         int count = 0;
         if ( isPieceOnScreen() ){
-            for ( int i = pieceRow + 1; i < 8 && count < numMoves; i++ ){
+            for ( int i = pieceRow + 1; i < SystemParameters.getBoardDimensionY() && count < numMoves; i++ ){
                 if ( ( board.getCell( i, pieceColumn ).getPieceOnSquare()
                     == null || isEnemy( board, i, pieceColumn ) ) ){
                     moves.add( i + "," + pieceColumn );
@@ -202,7 +202,7 @@ public abstract class ChessGamePiece{
         ArrayList<String> moves = new ArrayList<String>();
         int count = 0;
         if ( isPieceOnScreen() ){
-            for ( int i = pieceColumn + 1; i < 8 && count < numMoves; i++ ){
+            for ( int i = pieceColumn + 1; i < SystemParameters.getBoardDimensionX() && count < numMoves; i++ ){
                 if ( ( board.getCell( pieceRow, i ).getPieceOnSquare()
                     == null || isEnemy( board, pieceRow, i ) ) ){
                     moves.add( pieceRow + "," + i );
@@ -270,7 +270,7 @@ public abstract class ChessGamePiece{
         ArrayList<String> moves = new ArrayList<String>();
         int count = 0;
         if ( isPieceOnScreen() ){
-            for ( int i = 1; i < 8 && count < numMoves; i++ ){
+            for ( int i = 1; i < SystemParameters.getBoardDimensionY() && count < numMoves; i++ ){
                 if ( isOnScreen( pieceRow - i, pieceColumn - i )
                     && ( board.getCell( pieceRow - i,
                         pieceColumn - i ).getPieceOnSquare() == null ) ){
@@ -307,7 +307,7 @@ public abstract class ChessGamePiece{
         ArrayList<String> moves = new ArrayList<String>();
         int count = 0;
         if ( isPieceOnScreen() ){
-            for ( int i = 1; i < 8 && count < numMoves; i++ ){
+            for ( int i = 1; i < SystemParameters.getBoardDimensionY() && count < numMoves; i++ ){
                 if ( isOnScreen( pieceRow - i, pieceColumn + i )
                     && ( board.getCell( pieceRow - i,
                         pieceColumn + i).getPieceOnSquare() == null ) ){
@@ -344,7 +344,7 @@ public abstract class ChessGamePiece{
         ArrayList<String> moves = new ArrayList<String>();
         int count = 0;
         if ( isPieceOnScreen() ){
-            for ( int i = 1; i < 8 && count < numMoves; i++ ){
+            for ( int i = 1; i < SystemParameters.getBoardDimensionY() && count < numMoves; i++ ){
                 if ( isOnScreen( pieceRow + i, pieceColumn - i )
                     && ( board.getCell( pieceRow + i,
                         pieceColumn - i ).getPieceOnSquare() == null ) ){
@@ -381,7 +381,7 @@ public abstract class ChessGamePiece{
         ArrayList<String> moves = new ArrayList<String>();
         int count = 0;
         if ( isPieceOnScreen() ){
-            for ( int i = 1; i < 8 && count < numMoves; i++ ){
+            for ( int i = 1; i < SystemParameters.getBoardDimensionY() && count < numMoves; i++ ){
                 if ( isOnScreen( pieceRow + i, pieceColumn + i )
                     && ( board.getCell( pieceRow + i,
                         pieceColumn + i ).getPieceOnSquare() == null ) ){
@@ -437,7 +437,10 @@ public abstract class ChessGamePiece{
      * @return boolean true if the location is valid, false if not
      */
     public boolean isOnScreen( int row, int col ){
-        if ( row >= 0 && row <= 7 && col >= 0 && col <= 7 ){
+        boolean rowValid = row >= 0 && row < SystemParameters.getBoardDimensionY();
+        boolean colValid = col >= 0 && col < SystemParameters.getBoardDimensionX();
+
+        if ( rowValid && colValid ){
             return true;
         }
         else
@@ -474,14 +477,14 @@ public abstract class ChessGamePiece{
                 ChessGraveyard graveyard;
                 ChessGameEngine gameEngine =
                     ( (ChessPanel)board.getParent() ).getGameEngine();
-                if ( gameEngine.getCurrentPlayer() == 1 ){
+                if ( gameEngine.getCurrentPlayer() == SystemParameters.Player.ONE ){
                     graveyard =
-                        ( (ChessPanel)board.getParent() ).getGraveyard( 2 );
+                        ( (ChessPanel)board.getParent() ).getGraveyard( SystemParameters.Player.TWO );
                 }
                 else
                 {
                     graveyard =
-                        ( (ChessPanel)board.getParent() ).getGraveyard( 1 );
+                        ( (ChessPanel)board.getParent() ).getGraveyard( SystemParameters.Player.ONE );
                 }
                 graveyard.addPiece(
                     board.getCell( row, col ).getPieceOnSquare() );
@@ -663,13 +666,10 @@ public abstract class ChessGamePiece{
      * @return true if it is an enemy piece, false if not
      */
     public boolean isEnemy( ChessGameBoard board, int row, int col ){
-        if ( row > 7 || col > 7 || row < 0 || col < 0 ){
+        if ( !isOnScreen(row, col) ){
             return false;
         }
-        ChessGamePiece enemyPiece =
-            board.getCell( row, col ).getPieceOnSquare() == null
-                ? null
-                : board.getCell( row, col ).getPieceOnSquare();
+        ChessGamePiece enemyPiece = board.getCell( row, col ).getPieceOnSquare();
         if ( enemyPiece == null
             || this.getColorOfPiece() == ChessGamePiece.UNASSIGNED
             || enemyPiece.getColorOfPiece() == ChessGamePiece.UNASSIGNED ){
@@ -732,7 +732,7 @@ public abstract class ChessGamePiece{
      */
     @Override
     public String toString(){
-        return this.getClass().toString().substring( 6 ) + " @ (" + pieceRow
+        return this.getClass().toString().substring( SystemParameters.getGamePieceToStringLimit() ) + " @ (" + pieceRow
             + ", " + pieceColumn + ")";
     }
 }

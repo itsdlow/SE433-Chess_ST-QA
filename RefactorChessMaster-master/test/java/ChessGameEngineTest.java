@@ -37,7 +37,7 @@ public class ChessGameEngineTest
     @Test
     public void ResetTest()
     {
-        int expectedCurrentPlayer = 1;
+        SystemParameters.Player expectedCurrentPlayer = SystemParameters.Player.ONE;
 
         //setup
         ChessPanel testPanel = new ChessPanel();
@@ -59,24 +59,26 @@ public class ChessGameEngineTest
         assertEquals(testBoard.getCell( 0, 3 ).getPieceOnSquare().getClass(), King.class);
     }
 
-    @Test
-    public void InvalidPlayerHasLegalMovesTest()
-    {
-
-        //setup
-        ChessPanel testPanel = new ChessPanel();
-
-        ChessGameBoard testBoard = testPanel.getGameBoard();
-        testBoard.resetBoard(false);
-
-        ChessGameEngine testEngine = testPanel.getGameEngine();
-
-        //apply
-        boolean res = testEngine.playerHasLegalMoves(3);
-
-        //assert
-        assertEquals(res, false);
-    }
+    //NOTE:: by converting "ChessGameEngine::playerHasLegalMoves(int)" to take enum
+        //==> no longer have possibility to be given bad input
+//    @Test
+//    public void InvalidPlayerHasLegalMovesTest()
+//    {
+//
+//        //setup
+//        ChessPanel testPanel = new ChessPanel();
+//
+//        ChessGameBoard testBoard = testPanel.getGameBoard();
+//        testBoard.resetBoard(false);
+//
+//        ChessGameEngine testEngine = testPanel.getGameEngine();
+//
+//        //apply
+//        boolean res = testEngine.playerHasLegalMoves((SystemParameters.Player)3);
+//
+//        //assert
+//        assertEquals(res, false);
+//    }
     @Test
     public void Player1HasLegalMovesTest()
     {
@@ -86,7 +88,7 @@ public class ChessGameEngineTest
         ChessGameEngine testEngine = testPanel.getGameEngine();
 
         //apply
-        boolean res = testEngine.playerHasLegalMoves(1);
+        boolean res = testEngine.playerHasLegalMoves(SystemParameters.Player.ONE);
 
         //assert
         assertEquals(res, true);
@@ -100,7 +102,7 @@ public class ChessGameEngineTest
         ChessGameEngine testEngine = testPanel.getGameEngine();
 
         //apply
-        boolean res = testEngine.playerHasLegalMoves(2);
+        boolean res = testEngine.playerHasLegalMoves(SystemParameters.Player.TWO);
 
         //assert
         assertEquals(res, true);
@@ -119,7 +121,7 @@ public class ChessGameEngineTest
         ChessGameEngine testEngine = testPanel.getGameEngine();
 
         //apply
-        boolean res = testEngine.playerHasLegalMoves(1);
+        boolean res = testEngine.playerHasLegalMoves(SystemParameters.Player.ONE);
 
         //assert
         assertEquals(res, false);
@@ -208,10 +210,10 @@ public class ChessGameEngineTest
         ChessGameBoard testBoard = testPanel.getGameBoard();
 
         // apply
-        int res = testEngine.determineGameLost();
+        ChessGameEngine.GameCondition res = testEngine.determineGameLost();
 
         //assert
-        assertEquals(res, 0);
+        assertEquals(res, ChessGameEngine.GameCondition.IN_PLAY);
     }
 
     @Test
@@ -237,15 +239,15 @@ public class ChessGameEngineTest
 
 
         // apply
-        int res = testEngine.determineGameLost();
+        ChessGameEngine.GameCondition res = testEngine.determineGameLost();
 
         //assert
-        assertEquals(res, -1);
+        assertEquals(res, ChessGameEngine.GameCondition.STALEMATE);
     }
     @Test
     public void DetermineGameLost_Player1_Test()
     {
-        int expectedPlayer1Loss = 1;
+        ChessGameEngine.GameCondition expectedPlayer1Loss = ChessGameEngine.GameCondition.PLAYER1_LOSS;
         //setup
         ChessPanel testPanel = new ChessPanel();
         ChessGameEngine testEngine = testPanel.getGameEngine();
@@ -273,7 +275,7 @@ public class ChessGameEngineTest
         checkCell3.setPieceOnSquare(new Rook(testBoard, 5, 4, ChessGamePiece.BLACK));
 
         // apply
-        int res = testEngine.determineGameLost();
+        ChessGameEngine.GameCondition res = testEngine.determineGameLost();
 
         //assert
         assertEquals(expectedPlayer1Loss, res);
@@ -281,7 +283,7 @@ public class ChessGameEngineTest
     @Test
     public void DetermineGameLost_Player2_Test()
     {
-        int expectedPlayer2Loss = 2;
+        ChessGameEngine.GameCondition expectedPlayer2Loss = ChessGameEngine.GameCondition.PLAYER2_LOSS;
         //setup
         ChessPanel testPanel = new ChessPanel();
         ChessGameEngine testEngine = testPanel.getGameEngine();
@@ -313,7 +315,7 @@ public class ChessGameEngineTest
         checkCell3.setPieceOnSquare(new Rook(testBoard, 2, 4, ChessGamePiece.WHITE));
 
         // apply
-        int res = testEngine.determineGameLost();
+        ChessGameEngine.GameCondition res = testEngine.determineGameLost();
 
         //assert
         assertEquals(expectedPlayer2Loss, res);
@@ -322,13 +324,153 @@ public class ChessGameEngineTest
     //---------------------------
     //NOTE:: No visible (non-private) side-effects produced from each branch of determineActionFromSquareClick()
     //---------------------------
-    //TODO:: enable determineActionFromSquareClick to be testable --> returns its side-effect?
+        //enable determineActionFromSquareClick to be testable --> returns its side-effect
+
+    //first click tests
+    @Test
+    public void determineActionFromSquareClick_EmptySquare_Test()
+    {
+        //setup
+        ChessPanel testPanel = new ChessPanel();
+        ChessGameEngine testEngine = testPanel.getGameEngine();
+        ChessGameBoard testBoard = testPanel.getGameBoard();
+
+        testEngine.setVerbose(false);
+        BoardSquare emptyCell = testBoard.getCell(4, 0);
+
+        //create event to make a move
+        MouseEvent e1 = new MouseEvent(emptyCell, 0, 0, 0, 0, 0, 0, false);
+
+        // apply
+        SystemParameters.Actions res = testEngine.determineActionFromSquareClick(e1);
+
+        //assert
+        assertEquals(SystemParameters.Actions.Invalid_SelectEmpty, res);
+    }
+    @Test
+    public void determineActionFromSquareClick_OpponentSquare_Test()
+    {
+        //setup
+        ChessPanel testPanel = new ChessPanel();
+        ChessGameEngine testEngine = testPanel.getGameEngine();
+        ChessGameBoard testBoard = testPanel.getGameBoard();
+
+        testEngine.setVerbose(false);
+        BoardSquare opponentCell = testBoard.getCell(0, 0);
+
+        //create event to make a move
+        MouseEvent e1 = new MouseEvent(opponentCell, 0, 0, 0, 0, 0, 0, false);
+
+        // apply
+        SystemParameters.Actions res = testEngine.determineActionFromSquareClick(e1);
+
+        //assert
+        assertEquals(SystemParameters.Actions.Invalid_SelectOpponent, res);
+    }
+    @Test
+    public void determineActionFromSquareClick_Select_Test()
+    {
+        //setup
+        ChessPanel testPanel = new ChessPanel();
+        ChessGameEngine testEngine = testPanel.getGameEngine();
+        ChessGameBoard testBoard = testPanel.getGameBoard();
+
+        testEngine.setVerbose(false);
+        BoardSquare pawnCell = testBoard.getCell(6, 0);
+
+        //create event to make a move
+        MouseEvent e1 = new MouseEvent(pawnCell, 0, 0, 0, 0, 0, 0, false);
+
+        // apply
+        SystemParameters.Actions res = testEngine.determineActionFromSquareClick(e1);
+
+        //assert
+        assertEquals(SystemParameters.Actions.Select, res);
+    }
+
+    //
+    //2nd click tests
+    //
+
+    //double click piece
+    @Test
+    public void determineActionFromSquareClick_Deselect_Test()
+    {
+        //setup
+        ChessPanel testPanel = new ChessPanel();
+        ChessGameEngine testEngine = testPanel.getGameEngine();
+        ChessGameBoard testBoard = testPanel.getGameBoard();
+
+        testEngine.setVerbose(false);
+        BoardSquare pawnCell = testBoard.getCell(6, 0);
+
+        //create event to make a move
+        MouseEvent e1 = new MouseEvent(pawnCell, 0, 0, 0, 0, 0, 0, false);
+        testEngine.determineActionFromSquareClick(e1);
+
+        // apply
+        SystemParameters.Actions res = testEngine.determineActionFromSquareClick(e1);
+
+        //assert
+        assertEquals(SystemParameters.Actions.Deselect, res);
+    }
+
+    @Test
+    public void determineActionFromSquareClick_Move_Test()
+    {
+        //setup
+        ChessPanel testPanel = new ChessPanel();
+        ChessGameEngine testEngine = testPanel.getGameEngine();
+        ChessGameBoard testBoard = testPanel.getGameBoard();
+
+        testEngine.setVerbose(false);
+        BoardSquare pawnCell = testBoard.getCell(6, 0);
+        BoardSquare toMoveCell = testBoard.getCell(4, 0);
+
+
+        //create event to make a move
+        MouseEvent e1 = new MouseEvent(pawnCell, 0, 0, 0, 0, 0, 0, false);
+        testEngine.determineActionFromSquareClick(e1);
+
+        MouseEvent e2 = new MouseEvent(toMoveCell, 0, 0, 0, 0, 0, 0, false);
+
+        // apply
+        SystemParameters.Actions res = testEngine.determineActionFromSquareClick(e2);
+
+        //assert
+        assertEquals(SystemParameters.Actions.Move, res);
+    }
+
+    @Test
+    public void determineActionFromSquareClick_InvalidMove_Test()
+    {
+        //setup
+        ChessPanel testPanel = new ChessPanel();
+        ChessGameEngine testEngine = testPanel.getGameEngine();
+        ChessGameBoard testBoard = testPanel.getGameBoard();
+
+        testEngine.setVerbose(false);
+        BoardSquare pawnCell = testBoard.getCell(6, 0);
+        BoardSquare toMoveCell = testBoard.getCell(3, 0);
+
+
+        //create event to make a move
+        MouseEvent e1 = new MouseEvent(pawnCell, 0, 0, 0, 0, 0, 0, false);
+        testEngine.determineActionFromSquareClick(e1);
+
+        MouseEvent e2 = new MouseEvent(toMoveCell, 0, 0, 0, 0, 0, 0, false);
+
+        // apply
+        SystemParameters.Actions res = testEngine.determineActionFromSquareClick(e2);
+
+        //assert
+        assertEquals(SystemParameters.Actions.Invalid_Move, res);
+    }
 
 //    //first click tests
 //    @Test
 //    public void determineActionFromSquareClick_EmptySquare_Test()
 //    {
-//
 //        //setup
 //        ChessPanel testPanel = new ChessPanel();
 //        ChessGameEngine testEngine = testPanel.getGameEngine();
@@ -340,56 +482,22 @@ public class ChessGameEngineTest
 //        //make a move (switch current player)
 //        MouseEvent e1 = new MouseEvent(emptyCell, 0, 0, 0, 0, 0, 0, false);
 //
-//        testEngine.determineActionFromSquareClick(e1);
+//        // Set a 2 second timer
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(500);
+//                } catch (Exception e) {
+//                }
+//                testEngine.disposeMessageDialog();
+//            }
+//
+//        }).start();
+//        SystemParameters.Actions res = testEngine.determineActionFromSquareClick(e1);
 //
 //        //assert
-//        assertEquals(res, false);
-//    }
-//    @Test
-//    public void determineActionFromSquareClick_OpponentSquare1_Test()
-//    {
-//        //setup
-//        ChessPanel testPanel = new ChessPanel();
-//        ChessGameEngine testEngine = testPanel.getGameEngine();
-//
-//        ChessGameBoard testBoard = testPanel.getGameBoard();
-//
-//
-//        // apply
-//        BoardSquare checkCell1 = testBoard.getCell(2, 2);
-//        BoardSquare checkCell2 = testBoard.getCell(2, 3);
-//
-//        //make a move (switch current player)
-//        MouseEvent e1 = new MouseEvent(piecePosition, 0, 0, 0, 0, 0, 0, false);
-//        MouseEvent e2 = new MouseEvent(toMovePosition, 0, 0, 0, 0, 0, 0, false);
-//
-//        //apply
-//        testEngine.determineActionFromSquareClick(e1);
-//        testEngine.determineActionFromSquareClick(e2);
-//
-//        //assert
-//        assertEquals(expectedPlayer2Loss, res);
-//    }
-//    @Test
-//    public void determineActionFromSquareClick_OpponentSquare2_Test()
-//    {
-//    }
-//
-//    //2nd click tests
-//    @Test
-//    public void determineActionFromSquareClick_Deselect_Test()
-//    {
-//        //double click piece
-//    }
-//
-//    @Test
-//    public void determineActionFromSquareClick_Move_Test()
-//    {
-//    }
-//
-//    @Test
-//    public void determineActionFromSquareClick_InvalidMove_Test()
-//    {
+//        assertEquals(SystemParameters.Actions.Invalid_SelectEmpty, res);
 //    }
 
 }

@@ -33,9 +33,11 @@ public class ChessGameBoard extends JPanel{
      * @return boolean true if they are valid, false otherwise
      */
     private boolean validateCoordinates( int row, int col ){
-        return chessCells.length > 0 && chessCells[0].length > 0 &&
-            row < chessCells.length && col < chessCells[0].length
-            && row >= 0 && col >= 0;
+        boolean boardInitialized = chessCells.length > 0 && chessCells[0].length > 0;
+        boolean rowValid =  row >= 0 && row < chessCells.length;
+        boolean colValid = col >= 0 && col < chessCells[0].length;
+
+        return boardInitialized && rowValid && colValid;
     }
     // ----------------------------------------------------------
     /**
@@ -75,12 +77,11 @@ public class ChessGameBoard extends JPanel{
      */
     public ArrayList<ChessGamePiece> getAllWhitePieces(){
         ArrayList<ChessGamePiece> whitePieces = new ArrayList<ChessGamePiece>();
-        for ( int i = 0; i < 8; i++ ){
-            for ( int j = 0; j < 8; j++ ){
-                if ( chessCells[i][j].getPieceOnSquare() != null
-                    && chessCells[i][j].getPieceOnSquare().getColorOfPiece() ==
-                        ChessGamePiece.WHITE ){
-                    whitePieces.add( chessCells[i][j].getPieceOnSquare() );
+        for ( int i = 0; i < SystemParameters.getBoardDimensionY(); i++ ){
+            for ( int j = 0; j < SystemParameters.getBoardDimensionX(); j++ ){
+                ChessGamePiece pieceOnCurrentSquare = chessCells[i][j].getPieceOnSquare();
+                if ( pieceOnCurrentSquare != null && pieceOnCurrentSquare.getColorOfPiece() == ChessGamePiece.WHITE ){
+                    whitePieces.add( pieceOnCurrentSquare );
                 }
             }
         }
@@ -94,12 +95,11 @@ public class ChessGameBoard extends JPanel{
      */
     public ArrayList<ChessGamePiece> getAllBlackPieces(){
         ArrayList<ChessGamePiece> blackPieces = new ArrayList<ChessGamePiece>();
-        for ( int i = 0; i < 8; i++ ){
-            for ( int j = 0; j < 8; j++ ){
-                if ( chessCells[i][j].getPieceOnSquare() != null
-                    && chessCells[i][j].getPieceOnSquare().getColorOfPiece() ==
-                        ChessGamePiece.BLACK ){
-                    blackPieces.add( chessCells[i][j].getPieceOnSquare() );
+        for ( int i = 0; i < SystemParameters.getBoardDimensionY(); i++ ){
+            for ( int j = 0; j < SystemParameters.getBoardDimensionX(); j++ ){
+                ChessGamePiece pieceOnCurrentSquare = chessCells[i][j].getPieceOnSquare();
+                if ( pieceOnCurrentSquare != null && pieceOnCurrentSquare.getColorOfPiece() == ChessGamePiece.BLACK ){
+                    blackPieces.add( pieceOnCurrentSquare );
                 }
             }
         }
@@ -110,11 +110,17 @@ public class ChessGameBoard extends JPanel{
      * Create a new ChessGameBoard object.
      */
     public ChessGameBoard(){
-        this.setLayout( new GridLayout( 8, 8, 1, 1 ) );
+        this.setLayout( new GridLayout( SystemParameters.getBoardDimensionY(), SystemParameters.getBoardDimensionX(), 1, 1 ) );
         listener = new BoardListener();
-        chessCells = new BoardSquare[8][8];
+        this.createBoardArray();
         initializeBoard();
     }
+
+    private void createBoardArray()
+    {
+        chessCells = new BoardSquare[SystemParameters.getBoardDimensionY()][SystemParameters.getBoardDimensionX()];
+    }
+
     // ----------------------------------------------------------
     /**
      * Clears the board of all items, including any pieces left over in the
@@ -124,11 +130,11 @@ public class ChessGameBoard extends JPanel{
      * the board blank.
      */
     public void resetBoard ( boolean addAfterReset ){
-        chessCells = new BoardSquare[8][8];
+        this.createBoardArray();
         this.removeAll();
         if ( getParent() instanceof ChessPanel ){
-            ( (ChessPanel)getParent() ).getGraveyard( 1 ).clearGraveyard();
-            ( (ChessPanel)getParent() ).getGraveyard( 2 ).clearGraveyard();
+            ( (ChessPanel)getParent() ).getGraveyard( SystemParameters.Player.ONE ).clearGraveyard();
+            ( (ChessPanel)getParent() ).getGraveyard( SystemParameters.Player.TWO ).clearGraveyard();
             ( (ChessPanel)getParent() ).getGameLog().clearLog();
         }
         for ( int i = 0; i < chessCells.length; i++ ){
@@ -160,33 +166,38 @@ public class ChessGameBoard extends JPanel{
         for ( int i = 0; i < chessCells.length; i++ ){
             for ( int j = 0; j < chessCells[0].length; j++ ){
                 ChessGamePiece pieceToAdd;
-                if ( i == 1 ) // black pawns
+                if ( i == SystemParameters.getBlackPawnRow() ) // black pawns
                 {
                     pieceToAdd = new Pawn( this, i, j, ChessGamePiece.BLACK );
                 }
-                else if ( i == 6 ) // white pawns
+                else if ( i == SystemParameters.getWhitePawnRow() ) // white pawns
                 {
                     pieceToAdd = new Pawn( this, i, j, ChessGamePiece.WHITE );
                 }
-                else if ( i == 0 || i == 7 ) // main rows
+                else if ( SystemParameters.isMainRow(i) ) // main rows
                 {
-                    int colNum =
-                        i == 0 ? ChessGamePiece.BLACK : ChessGamePiece.WHITE;
-                    if ( j == 0 || j == 7 ){
+                    int colNum = SystemParameters.getColor(i);
+                    if ( SystemParameters.isRookColumn(j)){
                         pieceToAdd = new Rook( this, i, j, colNum );
                     }
-                    else if ( j == 1 || j == 6 ){
+                    else if (SystemParameters.isKnightColumn(j)){
                         pieceToAdd = new Knight( this, i, j, colNum );
                     }
-                    else if ( j == 2 || j == 5 ){
+                    else if ( SystemParameters.isBishopColumn(j)){
                         pieceToAdd = new Bishop( this, i, j, colNum );
                     }
-                    else if ( j == 3 ){
+                    else if ( SystemParameters.isKingColumn(j) ){
                         pieceToAdd = new King( this, i, j, colNum );
+                    }
+                    else if (SystemParameters.isQueenColumn(j))
+                    {
+                        pieceToAdd = new Queen( this, i, j, colNum );
                     }
                     else
                     {
-                        pieceToAdd = new Queen( this, i, j, colNum );
+                        //Column not recognized...
+                        pieceToAdd = null;
+                        System.exit(0);
                     }
                 }
                 else
